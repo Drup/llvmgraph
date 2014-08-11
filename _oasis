@@ -1,0 +1,29 @@
+OASISFormat: 0.4
+Name:        Llgmgraph
+Version:     0.1
+Synopsis:    Ocamlgraph overlay for llvm
+Authors:     Gabriel Radanne <drupyog@zoho.com>
+License:     MIT
+Plugins:     META (0.3), DevFiles (0.3)
+
+AlphaFeatures: compiled_setup_ml
+BuildTools: ocamlbuild
+
+Library llvmgraph
+  Path: src
+  Modules: Llvmgraph
+  CompiledObject: best
+  BuildDepends: llvm, ocamlgraph
+
+AlphaFeatures: ocamlbuild_more_args
+Document llvmgraph
+  Install: false
+  Type: ocamlbuild (0.3)
+  BuildTools: ocamldoc
+
+  Title: API reference for Llvmgraph
+  XOCamlbuildPath: .
+  XOCamlbuildExtraArgs:
+    "-docflags '-colorize-code -short-functors -charset utf-8'"
+  XOCamlbuildLibraries:
+    llvmgraph
