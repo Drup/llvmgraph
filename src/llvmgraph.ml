@@ -45,7 +45,9 @@ module G = struct
 
   type vertex = V.t
 
-  module E = struct
+  module E
+  : Graph.Sig.EDGE with type vertex = vertex and type label = unit
+  = struct
     type t = V.t * V.t
     let compare = compare
 
@@ -68,47 +70,52 @@ module G = struct
   let is_empty x = [||] = Llvm.basic_blocks x
   let nb_vertex x = Array.length @@ Llvm.basic_blocks x
 
-  let nb_edges _ = failwith "nb_edges: Not implemented"
+  (** We will implement all other primitives though folding on
+      successor or predecessor edges. *)
 
-  (** {2 Successors and predecessors} *)
-
-  let succ _g v =
-    check_block _g v ;
+  let fold_succ_e f g v z =
+    check_block g v ;
     match Llvm.block_terminator v with
-      | None -> []
+      | None -> z
       | Some t ->
           let n = Llvm.num_operands t in
-          let rec aux i =
-            if i < n then []
+          let rec aux i acc =
+            if i < n then acc
             else begin
               let o = Llvm.operand t i in
               if Llvm.value_is_block o then
-                Llvm.block_of_value o :: aux (i+1)
-              else aux (i+1)
+                let e = E.create v () (Llvm.block_of_value o) in
+                aux (i+1) @@ f e acc
+              else aux (i+1) acc
             end
-          in aux 0
+          in aux 0 z
 
-  let pred _g v =
-    check_block _g v ;
+  let fold_pred_e f g v z =
+    check_block g v ;
     let llv = Llvm.value_of_block v in
-    let aux l llu =
+    let aux acc llu =
       let lli = Llvm.user llu in
       let llb' = Llvm.instr_parent lli in
       if is_terminator lli
-      then llb' :: l
-      else l
+      then f (E.create v () llb') acc
+      else acc
     in
-    Llvm.fold_left_uses aux [] llv
+    Llvm.fold_left_uses aux z llv
 
-  let succ_e g v = List.map (fun d -> E.create v () d) @@ succ g v
-  let pred_e g v = List.map (fun d -> E.create v () d) @@ pred g v
+
+  (** {2 Successors and predecessors} *)
+
+  let succ g v = fold_succ_e (fun e l -> E.dst e :: l) g v []
+  let pred g v = fold_pred_e (fun e l -> E.src e :: l) g v []
+
+  let succ_e g v = fold_succ_e (fun e l -> e :: l) g v []
+  let pred_e g v = fold_pred_e (fun e l -> e :: l) g v []
 
 
   (** Degree of a vertex *)
 
-  (* Should be reimplemented properly *)
-  let out_degree g v = List.length @@ succ g v
-  let in_degree g v = List.length @@ pred g v
+  let out_degree g v = fold_succ_e (fun _ n -> n + 1) g v 0
+  let in_degree  g v = fold_pred_e (fun _ n -> n + 1) g v 0
 
   (** {2 Membership functions} *)
 
@@ -130,31 +137,39 @@ module G = struct
 
   let iter_vertex = Llvm.iter_blocks
 
-  let fold_vertex f z g =
+  let fold_vertex f g z =
     Llvm.fold_left_blocks
-      (fun g v -> f v g) g z
+      (fun g v -> f v g) z g
 
-  let iter_edges f g = failwith "iter_edges: Not implemented"
-  let fold_edges f g = failwith "fold_edges: Not implemented"
-  let iter_edges_e f g = failwith "iter_edges_e: Not implemented"
-  let fold_edges_e f g = failwith "fold_edges_e: Not implemented"
+  (** {2 Edge iterators} *)
 
-  let map_vertex f g = failwith "map_vertex: Not implemented"
-
+  let iter_succ_e f g v = fold_succ_e (fun e () -> f e) g v ()
+  let iter_pred_e f g v = fold_pred_e (fun e () -> f e) g v ()
 
   (** {2 Vertex iterators} *)
 
-  let iter_succ f g v = List.iter f @@ succ g v
-  let fold_succ f g v z = List.fold_left (fun v l -> f l v) z @@ succ g v
-  let iter_pred f g v = List.iter f @@ succ g v
-  let fold_pred f g v z = List.fold_left (fun v l -> f l v) z @@ pred g v
+  let fold_succ f g v z = fold_succ_e (fun e acc -> f (E.dst e) acc) g v z
+  let fold_pred f g v z = fold_pred_e (fun e acc -> f (E.src e) acc) g v z
 
-  (** iter/fold on all edges going from/to a vertex. *)
+  let iter_succ f g v = fold_succ (fun v () -> f v) g v ()
+  let iter_pred f g v = fold_pred (fun v () -> f v) g v ()
 
-  let iter_succ_e f g v = List.iter f @@ succ_e g v
-  let fold_succ_e f g v z = List.fold_left (fun v l -> f l v) z @@ succ_e g v
-  let iter_pred_e f g v = List.iter f @@ pred_e g v
-  let fold_pred_e f g v z = List.fold_left (fun v l -> f l v) z @@ pred_e g v
+  (** {2 Iteration on all edges} *)
+  (* Implemented by iteration on the successors of each node. *)
+
+  let fold_edges_e f g z =
+    fold_vertex (fun v acc -> fold_succ_e f g v acc) g z
+
+  let fold_edges f g z = fold_edges_e (fun e acc -> f (E.src e) (E.dst e) acc) g z
+
+  let iter_edges_e f g = fold_edges_e (fun v () -> f v) g ()
+  let iter_edges f g = fold_edges (fun v v' () -> f v v') g ()
+
+  let nb_edges g = fold_edges_e (fun _ n -> n + 1) g 0
+
+
+  (** Can't implement vertex mapping. *)
+  let map_vertex f g = failwith "map_vertex: Not implemented"
 
 end
 
