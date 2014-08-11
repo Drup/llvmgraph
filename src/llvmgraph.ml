@@ -175,26 +175,26 @@ end
 
 module Map (B : Graph.Builder.S) = struct
 
-  let map ~vertex ~label g =
+  let map ~vertex ~label ?src ?dst g =
     let h = Hashtbl.create 128 in
-    let f_add_vertex llb g =
+    let get_src = match src with Some f -> f | None -> Hashtbl.find h in
+    let get_dst = match dst with Some f -> f | None -> Hashtbl.find h in
+    let f_add_vertex llb new_g =
       let v = vertex llb in
       Hashtbl.add h llb v ;
-      B.add_vertex g v
+      B.add_vertex new_g v
     in
-    let f_add_edges llb new_g =
-      let aux e new_g =
-        let lbl = label e in
-        let src = G.E.src e in
-        let dst = G.E.dst e in
-        B.add_edge_e new_g
-          (B.G.E.create (Hashtbl.find h src) lbl (Hashtbl.find h dst))
-      in G.fold_succ_e aux g llb new_g
+    let f_add_edges e new_g =
+      let lbl = label e in
+      let src = G.E.src e in
+      let dst = G.E.dst e in
+      B.add_edge_e new_g
+        (B.G.E.create (get_src src) lbl (get_dst dst))
     in
     let new_g =
       B.empty ()
       |> G.fold_vertex f_add_vertex g
-      |> G.fold_vertex f_add_edges g
+      |> G.fold_edges_e f_add_edges g
     in
     Hashtbl.find h, new_g
 
