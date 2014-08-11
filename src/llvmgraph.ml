@@ -80,7 +80,7 @@ module G = struct
       | Some t ->
           let n = Llvm.num_operands t in
           let rec aux i acc =
-            if i < n then acc
+            if i > n then acc
             else begin
               let o = Llvm.operand t i in
               if Llvm.value_is_block o then
