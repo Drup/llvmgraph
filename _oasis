@@ -15,6 +15,22 @@ Library llvmgraph
   CompiledObject: best
   BuildDepends: llvm, ocamlgraph
 
+
+Executable colordot
+  Install: false
+  Path: test
+  MainIs: colordot.ml
+  CompiledObject: best
+  BuildDepends: llvmgraph, llvm.bitreader
+
+Test colordot
+  Command:
+    clang -c -emit-llvm -o example.bc ../test/example.c
+    $colordot example.bc example.dot
+  TestTools: colordot
+  WorkingDirectory: _build
+
+
 AlphaFeatures: ocamlbuild_more_args
 Document llvmgraph
   Install: false
