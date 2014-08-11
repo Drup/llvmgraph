@@ -120,18 +120,11 @@ module G = struct
   (** {2 Membership functions} *)
 
   let mem_vertex g v = basicblock_in_function v g
+
   let mem_edge g v1 v2 =
     basicblock_in_function v1 g &&
     List.mem v2 @@ succ g v1
-
   let mem_edge_e g e = mem_edge g (E.src e) (E.dst e)
-
-  let find_edge g v1 v2 =
-    let dest = List.find (V.equal v2) @@ succ g v1 in
-    E.create v1 () dest
-
-  let find_all_edges g v1 v2 =
-    List.filter (fun e -> V.equal v2 @@ E.dst e) @@ succ_e g v2
 
   (** {2 Graph iterators} *)
 
@@ -145,6 +138,22 @@ module G = struct
 
   let iter_succ_e f g v = fold_succ_e (fun e () -> f e) g v ()
   let iter_pred_e f g v = fold_pred_e (fun e () -> f e) g v ()
+
+  (** Search functions *)
+
+  exception Found of edge
+  let find_edge g v1 v2 =
+    try
+      iter_succ_e
+        (fun e -> if V.equal v2 (E.dst e) then raise (Found e))
+        g v1 ;
+      raise Not_found
+    with Found e -> e
+
+  let find_all_edges g v1 v2 =
+    fold_succ_e
+      (fun e l -> if V.equal v2 (E.dst e) then e :: l else l)
+      g v1 []
 
   (** {2 Vertex iterators} *)
 
