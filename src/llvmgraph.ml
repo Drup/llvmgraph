@@ -1,3 +1,5 @@
+open Graph
+
 let id x = x
 
 module Misc = struct
@@ -46,7 +48,7 @@ module G = struct
   type vertex = V.t
 
   module E
-  : Graph.Sig.EDGE with type vertex = vertex and type label = unit
+  : Sig.EDGE with type vertex = vertex and type label = unit
   = struct
     type t = V.t * V.t
     let compare = compare
@@ -182,7 +184,7 @@ module G = struct
 
 end
 
-module Map (B : Graph.Builder.S) = struct
+module Map (B : Builder.S) = struct
 
   let map ~vertex ~label ?src ?dst g =
     let h = Hashtbl.create 128 in
@@ -208,3 +210,21 @@ module Map (B : Graph.Builder.S) = struct
     Hashtbl.find h, new_g
 
 end
+
+module Coloring = Coloring.Make (G)
+
+module Dot = Graphviz.Dot (struct
+    include G
+
+    let graph_attributes _ = []
+    let default_vertex_attributes _ = []
+
+    let vertex_name v =
+      let s = Llvm.(string_of_llvalue (value_of_block v)) in
+      Printf.sprintf "\"%s\"" s
+    let vertex_attributes _ = [`Shape `Box]
+    let get_subgraph _ = None
+    let default_edge_attributes _ = []
+    let edge_attributes _ = []
+
+  end)

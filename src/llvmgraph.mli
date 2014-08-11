@@ -19,3 +19,5 @@ module Map (B : Graph.Builder.S) : sig
     G.t -> (G.vertex -> B.G.vertex) * B.G.t
 
 end
+
+module Coloring : module type of Graph.Coloring.Make(G)
