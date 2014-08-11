@@ -1,7 +1,14 @@
+(** Read only ocamlgraph interface for the control-flow-graph of llvm functions. *)
 
+(** Graph of an llvm function.
+
+    Warning : {!map_vertex} is not implemented! *)
 module G : Graph.Sig.G
-  with type V.t = Llvm.llbasicblock
+  with type t = Llvm.llvalue
+   and type V.t = Llvm.llbasicblock
+   and type E.label = unit
 
+(** Mapping from Llvm's control flow graph to another graph. *)
 module Map (B : Graph.Builder.S) : sig
 
   val map :
