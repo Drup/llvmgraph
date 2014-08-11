@@ -1,5 +1,5 @@
 OASISFormat: 0.4
-Name:        Llgmgraph
+Name:        Llvmgraph
 Version:     0.1
 Synopsis:    Ocamlgraph overlay for llvm
 Authors:     Gabriel Radanne <drupyog@zoho.com>
