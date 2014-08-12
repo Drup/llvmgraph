@@ -250,9 +250,9 @@ end
 
 module Coloring = Coloring.Make(G)
 
-module Topological = Topological.Make (G)
+module Topological = Topological.Make(G)
 
-module Kruskal = Kruskal.Make (G)(G.Ordered_label)
+module Kruskal = Kruskal.Make(G)(G.Ordered_label)
 
 module Prim = Prim.Make(G)(G.Weight)
 

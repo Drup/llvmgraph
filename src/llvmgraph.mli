@@ -60,9 +60,9 @@ end
 
 module Coloring : module type of Coloring.Make(G)
 
-module Topological : module type of Topological.Make (G)
+module Topological : module type of Topological.Make(G)
 
-module Kruskal : module type of Kruskal.Make (G)(G.Ordered_label)
+module Kruskal : module type of Kruskal.Make(G)(G.Ordered_label)
 
 module Prim : module type of Prim.Make(G)(G.Weight)
 
