@@ -42,7 +42,10 @@ let () =
         let default_vertex_attributes _ = []
         let get_subgraph _ = None
         let default_edge_attributes _ = []
-        let edge_attributes _ = []
+        let edge_attributes e =
+          let user = Llvm.user (G.E.label e) in
+          let s = Printf.sprintf "user: %s" (Llvm.string_of_llvalue user) in
+          [`Label s]
 
         (* Print the definition of each basic block nicely. *)
         let vertex_name v =

@@ -48,19 +48,19 @@ module G = struct
   type vertex = V.t
 
   module E
-  : Sig.EDGE with type vertex = vertex and type label = unit
+  : Sig.EDGE with type vertex = vertex and type label = Llvm.lluse
   = struct
-    type t = V.t * V.t
+    type t = { src : V.t ; use : Llvm.lluse ; dst : V.t }
     let compare = compare
 
     type vertex = V.t
 
-    let src = fst
-    let dst = snd
+    let src e = e.src
+    let dst e = e.dst
 
-    type label = unit
-    let create x () y = (x,y)
-    let label _ = ()
+    type label = Llvm.lluse
+    let create src use dst = {src ; use ; dst}
+    let label e = e.use
 
   end
   type edge = E.t
@@ -84,9 +84,10 @@ module G = struct
           let rec aux i acc =
             if i >= n then acc
             else begin
-              let o = Llvm.operand t i in
+              let u = Llvm.operand_use t i in
+              let o = Llvm.used_value u in
               if Llvm.value_is_block o then
-                let e = E.create v () (Llvm.block_of_value o) in
+                let e = E.create v u (Llvm.block_of_value o) in
                 aux (i+1) @@ f e acc
               else aux (i+1) acc
             end
@@ -99,7 +100,7 @@ module G = struct
       let lli = Llvm.user llu in
       let llb' = Llvm.instr_parent lli in
       if is_terminator lli
-      then f (E.create v () llb') acc
+      then f (E.create v llu llb') acc
       else acc
     in
     Llvm.fold_left_uses aux z llv

@@ -9,7 +9,7 @@ module G : sig
   include Sig.G
     with type t = Llvm.llvalue
      and type V.t = Llvm.llbasicblock
-     and type E.label = unit
+     and type E.label = Llvm.lluse
 
   module Ordered_label : Sig.ORDERED_TYPE with type t = E.label
 
