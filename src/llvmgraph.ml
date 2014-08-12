@@ -182,7 +182,22 @@ module G = struct
   (** Can't implement vertex mapping. *)
   let map_vertex f g = failwith "map_vertex: Not implemented"
 
+  module Ordered_label = struct
+    type t = E.label
+    let compare (x:t) (y:t) = compare x y
+  end
+
+  module Weight = struct
+    type t = int
+    type label = E.label
+    let compare (x:t) (y:t) = compare x y
+    let zero = 0
+    let add = (+)
+    let weight _ = 1
+  end
+
 end
+
 
 module Map (B : Builder.S) = struct
 
@@ -211,20 +226,34 @@ module Map (B : Builder.S) = struct
 
 end
 
-module Coloring = Coloring.Make (G)
+(** {2 Some pre-applied functors} *)
 
-module Dot = Graphviz.Dot (struct
-    include G
+module Oper = struct
+  module Choose = Oper.Choose(G)
+  module Neighbourhood = Oper.Neighbourhood(G)
+end
 
-    let graph_attributes _ = []
-    let default_vertex_attributes _ = []
+module Component = Components.Make(G)
 
-    let vertex_name v =
-      let s = Llvm.(string_of_llvalue (value_of_block v)) in
-      Printf.sprintf "\"%s\"" s
-    let vertex_attributes _ = [`Shape `Box]
-    let get_subgraph _ = None
-    let default_edge_attributes _ = []
-    let edge_attributes _ = []
+module Path = struct
 
-  end)
+  module Dijkstra = Path.Dijkstra(G)(G.Weight)
+
+end
+
+module Traverse = struct
+
+  module Dfs = Traverse.Dfs(G)
+  module Bfs = Traverse.Bfs(G)
+
+end
+
+module Coloring = Coloring.Make(G)
+
+module Topological = Topological.Make (G)
+
+module Kruskal = Kruskal.Make (G)(G.Ordered_label)
+
+module Prim = Prim.Make(G)(G.Weight)
+
+module Leaderlist = Leaderlist.Make(G)
