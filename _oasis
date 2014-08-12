@@ -21,7 +21,7 @@ Executable colordot
   Path: test
   MainIs: colordot.ml
   CompiledObject: best
-  BuildDepends: llvmgraph, llvm.bitreader
+  BuildDepends: llvmgraph, llvm.bitreader, str
 
 Test colordot
   Command:

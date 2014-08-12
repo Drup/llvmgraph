@@ -3,10 +3,10 @@ open Llvmgraph
 
 let to_color h v =
   match Coloring.H.find h v with
-    | 0 -> 0x0000FF
-    | 1 -> 0x00FF00
-    | 2 -> 0xFF0000
-    | _ -> 0
+    | 0 -> 0x0000FF55l
+    | 1 -> 0x00FF0055l
+    | 2 -> 0xFF000055l
+    | _ -> 0l
 
 let () =
   let ctx = Llvm.create_context () in
@@ -25,8 +25,13 @@ let () =
 
         let vertex_name v =
           let s = Llvm.(string_of_llvalue (value_of_block v)) in
-          Printf.sprintf "\"%s\"" s
-        let vertex_attributes v = [`Shape `Box ; `Style `Filled ;`Fillcolor (to_color h v)]
+          Str.global_replace (Str.regexp "\n") "\\l" (Printf.sprintf "\"%s\"" s)
+        let vertex_attributes v = [
+          `Fontname "monospace";
+          `Shape `Record ;
+          `Style `Filled ;
+          `FillcolorWithTransparency (to_color h v) ;
+        ]
         let get_subgraph _ = None
         let default_edge_attributes _ = []
         let edge_attributes _ = []
