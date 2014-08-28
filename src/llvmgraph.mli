@@ -67,3 +67,13 @@ module Kruskal : module type of Kruskal.Make(G)(G.Ordered_label)
 module Prim : module type of Prim.Make(G)(G.Weight)
 
 module Leaderlist : module type of Leaderlist.Make(G)
+
+(** Do not compute the Dom graph, it will fail.
+    Using {!compute_all} is fine, as long as you don't use the dom_graph closure.
+*)
+module Dominator :
+  module type of Dominator.Make(struct
+    include G
+    let create ?size:_ _ = assert false
+    let add_edge _ = assert false
+  end)

@@ -257,3 +257,9 @@ module Kruskal = Kruskal.Make(G)(G.Ordered_label)
 module Prim = Prim.Make(G)(G.Weight)
 
 module Leaderlist = Leaderlist.Make(G)
+
+module Dominator = Dominator.Make(struct
+    include G
+    let create ?size:_ _ = assert false
+    let add_edge _ _ = assert false
+  end)
