@@ -3,12 +3,15 @@ PACKAGE=llvmgraph
 case "$OCAML_VERSION" in
 4.01.0) ppa=avsm/ocaml41+opam12 ;;
 4.02.0) ppa=avsm/ocaml42+opam12 ;;
-*) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
+*) echo Unknown $OCAML_VERSION; exit 1 ;;
 esac
 
 echo "yes" | sudo add-apt-repository ppa:$ppa
+echo "yes" | sudo add-apt-repository 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.5 main'
+wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
+
 sudo apt-get update -qq
-sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra opam llvm
+sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra opam llvm-3.5-dev
 export OPAMYES=1
 echo OCaml version
 ocaml -version
