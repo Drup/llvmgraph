@@ -21,7 +21,7 @@ See [the interface](src/llvmgraph.mli) for more details.
 
 The [test](test) folder may be consulted to find some interesting uses of this library. In particular, the [colordot example](test/colordot.ml) is annotated with detailed explanations.
 
-Here is the result on [`colordot.c`](test/colordot.c):
+Here is the result on [`example.c`](test/example.c):
 ![colordot.dot](http://i.imgur.com/VahGMoP.png)
 
 Other examples are very welcome.
