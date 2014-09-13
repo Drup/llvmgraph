@@ -1,9 +1,8 @@
 PACKAGE=llvmgraph
 
-OPAM_VERSION=1.1.0
-case "$OCAML_VERSION,$OPAM_VERSION" in
-4.01.0,1.1.0) ppa=avsm/ocaml41+opam11 ;;
-4.02.0,1.1.0) ppa=avsm/ocaml42+opam11 ;;
+case "$OCAML_VERSION" in
+4.01.0) ppa=avsm/ocaml41+opam12 ;;
+4.02.0) ppa=avsm/ocaml42+opam12 ;;
 *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
 esac
 
@@ -20,7 +19,7 @@ opam --git-version
 opam init
 eval `opam config env`
 
-opam pin --verbose ${PACKAGE} .
+opam pin add --verbose ${PACKAGE} .
 
 opam install -t -d --verbose ${PACKAGE}
 opam remove --verbose ${PACKAGE}
