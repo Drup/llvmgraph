@@ -7,6 +7,7 @@ homepage: "https://github.com/Drup/llvmgraph"
 bug-reports: "https://github.com/Drup/llvmgraph/issues"
 dev-repo: "https://github.com/Drup/llvmgraph.git"
 license: "MIT"
+tags: [ "llvm" "ocamlgraph" ]
 
 build: [
   ["./configure" "--prefix=%{prefix}%"]
