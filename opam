@@ -24,9 +24,9 @@ remove: ["ocamlfind" "remove" "llvmgraph"]
 
 available: [ocaml-version >= "4.01.0"]
 depends: [
-  "ocamlfind"
+  "ocamlfind" {build}
   "llvm"
   "ocamlgraph"
   # Remove oasis for the package
-  "oasis"
+  "oasis" {build}
 ]
