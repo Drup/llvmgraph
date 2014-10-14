@@ -14,7 +14,7 @@ build: [
   [make]
 ]
 build-test: [
-  ["./configure" "--enable-tests"]
+  ["./configure" "--prefix=%{prefix}%" "--enable-tests"]
   [make "test"]
 ]
 build-doc: [make "doc"]

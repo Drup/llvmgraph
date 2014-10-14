@@ -1,4 +1,4 @@
-llvmgraph
+llvmgraph [![Build Status](https://travis-ci.org/Drup/llvmgraph.svg?branch=master)](https://travis-ci.org/Drup/llvmgraph)
 ===============
 
 Ocamlgraph overlay for llvm

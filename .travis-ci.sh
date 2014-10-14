@@ -7,11 +7,14 @@ case "$OCAML_VERSION" in
 esac
 
 echo "yes" | sudo add-apt-repository ppa:$ppa
+
+echo "yes" | sudo add-apt-repository 'deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main'
 echo "yes" | sudo add-apt-repository 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.5 main'
 wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
 
 sudo apt-get update -qq
-sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra opam llvm-3.5-dev
+sudo apt-get install -qq -y ocaml ocaml-native-compilers camlp4-extra opam llvm-3.5-dev clang-3.5
+
 export OPAMYES=1
 echo OCaml version
 ocaml -version
@@ -22,7 +25,8 @@ opam --git-version
 opam init
 eval `opam config env`
 
-opam pin add --verbose ${PACKAGE} .
+
+opam pin add --verbose -n ${PACKAGE} .
 
 opam install -t -d --verbose ${PACKAGE}
 opam remove --verbose ${PACKAGE}
