@@ -14,7 +14,7 @@ build: [
   ["ocaml" "setup.ml" "-build"]
 ]
 build-test: [
-  ["ocaml" "setup.ml" "-configure" "--prefix=%{prefix}%" "--enable-tests"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-tests"]
   ["ocaml" "setup.ml" "-test"]
 ]
 build-doc: ["ocaml" "setup.ml" "-doc"]
