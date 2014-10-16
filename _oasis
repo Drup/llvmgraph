@@ -6,7 +6,6 @@ Authors:     Gabriel Radanne <drupyog@zoho.com>
 License:     MIT
 Plugins:     META (0.3), DevFiles (0.3)
 
-AlphaFeatures: compiled_setup_ml
 BuildTools: ocamlbuild
 
 Library llvmgraph

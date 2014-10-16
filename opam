@@ -10,16 +10,16 @@ license: "MIT"
 tags: [ "llvm" "ocamlgraph" ]
 
 build: [
-  ["./configure" "--prefix=%{prefix}%"]
-  [make]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
 ]
 build-test: [
-  ["./configure" "--prefix=%{prefix}%" "--enable-tests"]
-  [make "test"]
+  ["ocaml" "setup.ml" "-configure" "--prefix=%{prefix}%" "--enable-tests"]
+  ["ocaml" "setup.ml" "-test"]
 ]
-build-doc: [make "doc"]
+build-doc: ["ocaml" "setup.ml" "-doc"]
 
-install: [make "install"]
+install: ["ocaml" "setup.ml" "-install"]
 
 remove: ["ocamlfind" "remove" "llvmgraph"]
 
