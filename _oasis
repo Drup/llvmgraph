@@ -17,6 +17,7 @@ Library llvmgraph
 
 Executable colordot
   Install: false
+  Build$: flag(tests)
   Path: test
   MainIs: colordot.ml
   CompiledObject: best
