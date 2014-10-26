@@ -4,14 +4,6 @@ let id x = x
 
 module Misc = struct
 
-  let is_terminator llv =
-    let open Llvm.ValueKind in
-    let open Llvm.Opcode in
-    match Llvm.classify_value llv with
-      | Instruction (Br | IndirectBr | Invoke | Resume | Ret | Switch | Unreachable)
-        -> true
-      | _ -> false
-
   let basicblock_in_function llb llf =
     Llvm.block_parent llb = llf
 
@@ -99,7 +91,7 @@ module G = struct
     let aux acc llu =
       let lli = Llvm.user llu in
       let llb' = Llvm.instr_parent lli in
-      if is_terminator lli
+      if Llvm.is_terminator lli
       then f (E.create v llu llb') acc
       else acc
     in
