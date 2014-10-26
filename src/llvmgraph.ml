@@ -4,14 +4,6 @@ let id x = x
 
 module Misc = struct
 
-  let is_terminator llv =
-    let open Llvm.ValueKind in
-    let open Llvm.Opcode in
-    match Llvm.classify_value llv with
-      | Instruction (Br | IndirectBr | Invoke | Resume | Ret | Switch | Unreachable)
-        -> true
-      | _ -> false
-
   let basicblock_in_function llb llf =
     Llvm.block_parent llb = llf
 
@@ -80,17 +72,7 @@ module G = struct
     match Llvm.block_terminator v with
       | None -> z
       | Some t ->
-          let n = Llvm.num_operands t in
-          let rec aux i acc =
-            if i >= n then acc
-            else begin
-              let o = Llvm.operand t i in
-              if Llvm.value_is_block o then
-                let e = E.create v () (Llvm.block_of_value o) in
-                aux (i+1) @@ f e acc
-              else aux (i+1) acc
-            end
-          in aux 0 z
+          Llvm.fold_successors (fun b -> f @@ E.create v () b) t z
 
   let fold_pred_e f g v z =
     check_block g v ;
@@ -98,7 +80,7 @@ module G = struct
     let aux acc llu =
       let lli = Llvm.user llu in
       let llb' = Llvm.instr_parent lli in
-      if is_terminator lli
+      if Llvm.is_terminator lli
       then f (E.create v () llb') acc
       else acc
     in
