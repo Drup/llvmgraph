@@ -9,11 +9,11 @@ esac
 echo "yes" | sudo add-apt-repository ppa:$ppa
 
 echo "yes" | sudo add-apt-repository 'deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main'
-echo "yes" | sudo add-apt-repository 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.5 main'
+echo "yes" | sudo add-apt-repository 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main'
 wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
 
 sudo apt-get update -qq
-sudo apt-get install -qq -y ocaml ocaml-native-compilers camlp4-extra opam llvm-3.5-dev clang-3.5
+sudo apt-get install -qq -y ocaml ocaml-native-compilers camlp4-extra opam llvm-3.6-dev clang-3.6
 
 export OPAMYES=1
 echo OCaml version
