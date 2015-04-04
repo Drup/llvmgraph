@@ -1,0 +1,32 @@
+# OASIS_START
+# DO NOT EDIT (digest: 099231b7a3ef48b26af7ff7d309b962b)
+# Ignore VCS directories, you can use the same kind of rule outside
+# OASIS_START/STOP if you want to exclude directories that contains
+# useless stuff for the build process
+true: annot, bin_annot
+<**/.svn>: -traverse
+<**/.svn>: not_hygienic
+".bzr": -traverse
+".bzr": not_hygienic
+".hg": -traverse
+".hg": not_hygienic
+".git": -traverse
+".git": not_hygienic
+"_darcs": -traverse
+"_darcs": not_hygienic
+# Library llvmgraph
+"src/llvmgraph.cmxs": use_llvmgraph
+<src/*.ml{,i,y}>: pkg_llvm
+<src/*.ml{,i,y}>: pkg_ocamlgraph
+# Executable colordot
+<test/colordot.{native,byte}>: pkg_llvm
+<test/colordot.{native,byte}>: pkg_llvm.bitreader
+<test/colordot.{native,byte}>: pkg_ocamlgraph
+<test/colordot.{native,byte}>: pkg_str
+<test/colordot.{native,byte}>: use_llvmgraph
+<test/*.ml{,i,y}>: pkg_llvm
+<test/*.ml{,i,y}>: pkg_llvm.bitreader
+<test/*.ml{,i,y}>: pkg_ocamlgraph
+<test/*.ml{,i,y}>: pkg_str
+<test/*.ml{,i,y}>: use_llvmgraph
+# OASIS_STOP

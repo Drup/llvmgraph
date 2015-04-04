@@ -1,0 +1,12 @@
+# OASIS_START
+# DO NOT EDIT (digest: 7f963b970e6a0e80a75ee38c2525dc4f)
+version = "0.2"
+description = "Ocamlgraph overlay for llvm"
+requires = "llvm ocamlgraph"
+archive(byte) = "llvmgraph.cma"
+archive(byte, plugin) = "llvmgraph.cma"
+archive(native) = "llvmgraph.cmxa"
+archive(native, plugin) = "llvmgraph.cmxs"
+exists_if = "llvmgraph.cma"
+# OASIS_STOP
+
