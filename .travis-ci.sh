@@ -18,9 +18,8 @@ sudo apt-get install -qq -y ocaml ocaml-native-compilers camlp4-extra opam llvm-
 export OPAMYES=1
 echo OCaml version
 ocaml -version
-echo OPAM versions
-opam --version
-opam --git-version
+echo OPAM info
+opam config report
 
 opam init
 eval `opam config env`
