@@ -190,6 +190,7 @@ module G = struct
   module Weight = struct
     type t = int
     type label = E.label
+    type edge = E.t
     let compare (x:t) (y:t) = compare x y
     let zero = 0
     let add = (+)

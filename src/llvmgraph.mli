@@ -16,10 +16,13 @@ module G : sig
   module Weight : sig
     type t = int
     type label = E.label
+    type edge = E.t
     val compare : t -> t -> t
     val zero : t
     val add : t -> t -> t
-    val weight : label -> t
+
+    (** Constant weight, is always 1. *)
+    val weight : 'a -> t
   end
 
 end
